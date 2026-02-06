@@ -161,9 +161,9 @@ class TrocaDeTurma(PaginaBase):
     def __init__(self, parent, controller):
         super().__init__(parent, controller)
 
-        cursos = {"Administração": 0}
+        cursos = {"Administração": 0, "Análise e Des": 1, "Biomedicina": 2, "C.D.C. (IA)": 3, "Ciências Cont": 4, "Ed. Fís. Bach": 5, "Ed. Fís. Lic.": 6, "Eng. de Prod.": 7, "Eng. Elétrica": 8, "Eng. Mecânica": 9, "Farmácia": 10, "Fisioterapia": 11, "Gestão de RH": 12, "Gestão Púb.": 13, "Nutrição": 14, "Pedagogia": 15, "Serviço Social": 16}
         periodos = {"1° Período": 1, "2° Período": 2, "3° Período": 3, "4° Período": 4, "5° Período": 5, "6° Período": 6, "7° Período": 7, "8° Período": 8, "9° Período": 9, "10° Período": 10}
-        turnos = {"Manhã": 1, "Noite": 2}
+        turnos = {"Opção Nº1": 1, "Opção Nº2": 2,"Opção Nº3": 3,"Opção Nº4": 4,"Opção Nº5": 5,"Opção Nº6": 6,"Opção Nº7": 7,"Opção Nº8": 8,"Opção Nº9": 9,"Opção Nº10": 10}
 
         frame = ctk.CTkFrame(self, fg_color="transparent")
         frame.pack(expand= True)

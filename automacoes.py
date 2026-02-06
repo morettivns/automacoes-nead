@@ -29,7 +29,7 @@ def SophiaEntrar(usuario, senha):
 #---------------------# 
 
 def TrocaDeTurma(curso = None, periodo = None, turno = None):
-    time.sleep(4) #Amanhã vou fazer com que ao pressionar "[" o código inicie,
+    #time.sleep(4) #Amanhã vou fazer com que ao pressionar "[" o código inicie,
                   #para dar tempo de mudar do programa para o Sophia.
     """ Botão executar """
     exec = pag.locateCenterOnScreen(str(Path(__file__).parent / "assets" / "prints" / "TrocaDeTurma" / "P1_executar.png"))
