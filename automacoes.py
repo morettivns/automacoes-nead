@@ -10,38 +10,40 @@ pag.FAILSAFE = True
 """  Abrir Sophia   """
 #---------------------#
 
-def SophiaEntrar(usuario, senha):
+def SophiaEntrar():
     pag.press("Win")
     pag.typewrite("Sophia Lite", interval= 0.2)
     pag.press("Enter")
-    time.sleep(2)
-    cx_usuario = pag.locateCenterOnScreen(str(Path(__file__).parent / "assets" / "prints" / "TrocaDeTurma" / "P1_sophiaUsuario.png"))
-    pag.click(cx_usuario.x, cx_usuario.y)
-    pag.typewrite(usuario, interval= 0.2)
-    pag.press("Tab")
-    pag.typewrite(senha, interval= 0.2)
-    pag.press("Enter")
-
 
 
 #---------------------#
 """ Troca de turma  """
 #---------------------# 
 
-def TrocaDeTurma(curso = None, periodo = None, turno = None):
+def TrocaDeTurma(campus = "n", curso = None, periodo = None, turno = None, texto_func= None):
     #time.sleep(4) #Amanhã vou fazer com que ao pressionar "[" o código inicie,
-                  #para dar tempo de mudar do programa para o Sophia.
+                   #para dar tempo de mudar do programa para o Sophia.
+    try:
+        teste = pag.locateCenterOnScreen(str(Path(__file__).parent / "assets" / "prints" / "TrocaDeTurma" / "PTeste_1.png"))
+        if teste:
+            pag.click(teste.x, teste.y, clicks= 2)
+            pag.hotkey("t", "Enter", interval= 0.5)
+    except pag.ImageNotFoundException:
+        print("Imagem nao encontrada")
+        pass
+
     """ Botão executar """
     exec = pag.locateCenterOnScreen(str(Path(__file__).parent / "assets" / "prints" / "TrocaDeTurma" / "P1_executar.png"))
     pag.click(exec.x, exec.y, clicks= 2)
     time.sleep(1)
-    pag.press("down", presses= 3, interval= 0.1)
+    pag.press("down", presses= 4, interval= 0.1)
     pag.press("Enter", presses= 2, interval= 0.1)
     print("Currículo antigo mudado!")
 
     """ Desativar currículo """
     desa = pag.locateCenterOnScreen(str(Path(__file__).parent / "assets" / "prints" / "TrocaDeTurma" / "P2_desativar.png"))
     pag.click(desa.x, desa.y)
+    time.sleep(2)
     pag.hotkey("up", "Tab", "Tab", interval= 0.3)
     pag.typewrite("tr")
     pag.hotkey("down", "Tab", "Tab", "Tab", "Enter", interval= 0.3)
@@ -51,12 +53,12 @@ def TrocaDeTurma(curso = None, periodo = None, turno = None):
     curr = pag.locateCenterOnScreen(str(Path(__file__).parent / "assets" / "prints" / "TrocaDeTurma" / "P3_criarCurriculo.png"))
     pag.click(curr.x, curr.y)
     time.sleep(1.5)
-    pag.hotkey("Tab", "G", "Space", "S", interval= 0.3)
+    pag.hotkey(campus, "Tab", "G", "Space", "S", interval= 0.3)
     pag.press("down", presses= curso, interval= 0.3) #Número do curso
     pag.press("Tab", presses= 2)
     time.sleep(2)
     pag.press("down")
-    
+
     seri = pag.locateCenterOnScreen(str(Path(__file__).parent / "assets" / "prints" / "TrocaDeTurma" / "P4_serie.png"))
     pag.click(seri.x, seri.y)
     time.sleep(1.5)
@@ -67,10 +69,15 @@ def TrocaDeTurma(curso = None, periodo = None, turno = None):
         pag.press("down", presses= turno) #1 para manha, 2 para noite
     print("Currículo novo criado!")
 
+    explicacao = "No Sophia: Selecione a turma desejada  →  Clique duas vezes no aluno a ser transferido  →  Clique em 'Acadêmico'  →  Selecione a turma desejada  →  Por fim, Selecione as opções abaixo e inicie o programa."
 
-    print("Aperte '[' para confirmar e ir para próximo.\n" \
-    "Aperte ']' para cancelar as alterações.\n" \
+    instrucao1 = ("Aperte '[' para confirmar e ir para próximo.\n" 
+    "Aperte ']' para cancelar as alterações.\n" 
     "Aperte 'Esc' para sair da automação.")
+
+    if texto_func:
+        texto_func.configure(text= instrucao1)
+        texto_func.update()
 
     while True:
         tecla = keyboard.read_key()
@@ -84,18 +91,25 @@ def TrocaDeTurma(curso = None, periodo = None, turno = None):
             time.sleep(1)
             prox = pag.locateCenterOnScreen(str(Path(__file__).parent / "assets" / "prints" / "TrocaDeTurma" / "P5_proximo.png"))
             pag.click(prox.x, prox.y)
-            
-            print("Quando na tela nova, selecione a disciplina para mudar e aperte '[' para continuar.")
+
+            texto_func.configure(text= "Quando na tela nova, selecione a disciplina para mudar e aperte '[' para continuar.")
+            texto_func.update()
             keyboard.wait("[")
             TrocaDeTurma(curso= curso, periodo= periodo, turno= turno)
             
         elif tecla == "]":
             print("Opção cancelar selecionada.")
+            if texto_func:
+                texto_func.configure(text=explicacao)
+                texto_func.update()
             canc = pag.locateCenterOnScreen(str(Path(__file__).parent / "assets" / "prints" / "TrocaDeTurma" / "P6_cancelar.png"))
             pag.click(canc.x, canc.y)
             break
 
         elif tecla == "esc":
+            if texto_func:
+                texto_func.configure(text=explicacao)
+                texto_func.update()
             print("Saindo...")
             break
 

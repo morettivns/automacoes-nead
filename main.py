@@ -1,5 +1,4 @@
 import customtkinter as ctk
-import pyautogui as pag
 import automacoes
 from pathlib import Path
 from PIL import Image, ImageTk
@@ -82,14 +81,8 @@ class Principal(PaginaBase):
         frame_botoes= ctk.CTkFrame(frame,fg_color="transparent")
         frame_botoes.pack()
 
-        botaoLoginSophia = ctk.CTkButton(frame_botoes, text= "Logar Sophia", command= lambda: controller.mostrar_pagina(LoginSophia))
-        botaoLoginSophia.grid(row= 0, column= 0, padx= 10, pady= 10)
-
         botaoEntrarSophia = ctk.CTkButton(frame_botoes, text= "Automações Sophia", command= lambda: controller.mostrar_pagina(Sophia))
         botaoEntrarSophia.grid(row= 1, column= 0, padx= 10, pady= 10)
-
-        botaoAvauni = ctk.CTkButton(frame_botoes, text= "Logar Avauni", command= lambda: controller.mostrar_pagina(LoginAvauni))
-        botaoAvauni.grid(row= 0, column= 1, padx= 10, pady= 10)
 
         botaoEntrarAvauni = ctk.CTkButton(frame_botoes, text= "Automações Avauni", command= lambda: controller.mostrar_pagina(Avauni))
         botaoEntrarAvauni.grid(row= 1, column= 1, padx= 10, pady= 10)
@@ -135,8 +128,9 @@ class Sophia(PaginaBase):
         frame_botoes.pack()
 
         qnt_botoes = 8
-        texto = ["Troca de turma", "Print", "Botão", "Botão", "Botão", "Botão", "Botão", "Botão", "Botão"]
-        comandos = [lambda: controller.mostrar_pagina(TrocaDeTurma),
+        texto = ["Abrir Sophia", "Troca de Turma", "Teste Print", "Botão", "Botão", "Botão", "Botão", "Botão", "Botão"]
+        comandos = [lambda: automacoes.SophiaEntrar(),
+                    lambda: controller.mostrar_pagina(TrocaDeTurma),
                     lambda: print("Deu certo"), "", "", "", "", "", "", ""]
 
         linha, coluna = 0, 0
@@ -161,6 +155,7 @@ class TrocaDeTurma(PaginaBase):
     def __init__(self, parent, controller):
         super().__init__(parent, controller)
 
+        campus = {"Nova Iguaçu": "n","Itaperuna": "i", "Cidade Nova": "c"}
         cursos = {"Administração": 0, "Análise e Des": 1, "Biomedicina": 2, "C.D.C. (IA)": 3, "Ciências Cont": 4, "Ed. Fís. Bach": 5, "Ed. Fís. Lic.": 6, "Eng. de Prod.": 7, "Eng. Elétrica": 8, "Eng. Mecânica": 9, "Farmácia": 10, "Fisioterapia": 11, "Gestão de RH": 12, "Gestão Púb.": 13, "Nutrição": 14, "Pedagogia": 15, "Serviço Social": 16}
         periodos = {"1° Período": 1, "2° Período": 2, "3° Período": 3, "4° Período": 4, "5° Período": 5, "6° Período": 6, "7° Período": 7, "8° Período": 8, "9° Período": 9, "10° Período": 10}
         turnos = {"Opção Nº1": 1, "Opção Nº2": 2,"Opção Nº3": 3,"Opção Nº4": 4,"Opção Nº5": 5,"Opção Nº6": 6,"Opção Nº7": 7,"Opção Nº8": 8,"Opção Nº9": 9,"Opção Nº10": 10}
@@ -168,26 +163,33 @@ class TrocaDeTurma(PaginaBase):
         frame = ctk.CTkFrame(self, fg_color="transparent")
         frame.pack(expand= True)
 
-        label = ctk.CTkLabel(frame, text="Escolha o Curso, Período e Turno")
-        label.pack(pady= 20)
+        ctk.CTkLabel(frame, text="Passo a Passo da Automação", font= ("Segoe UI",20, "bold")).pack(padx= 10, pady= (10,0))
+
+        explicacao = "No Sophia: Selecione a turma desejada  →  Clique duas vezes no aluno a ser transferido  →  Clique em 'Acadêmico'  →  Selecione a turma desejada  →  Por fim, Selecione as opções abaixo e inicie o programa."
+
+        self.texto = ctk.CTkLabel(frame, text= explicacao, wraplength=400)
+        self.texto.pack(pady= 20)
 
         frame_opcoes = ctk.CTkFrame(frame, fg_color="transparent")
         frame_opcoes.pack()
 
+        menu_campus = ctk.CTkComboBox(frame_opcoes, values= list(campus.keys()))
+        menu_campus.grid(row= 0, column= 0, padx= 10, pady= 10)
+
         menu_cursos = ctk.CTkComboBox(frame_opcoes, values= list(cursos.keys()))
-        menu_cursos.grid(row= 0, column= 0, padx= 10, pady= 10)
+        menu_cursos.grid(row= 0, column= 1, padx= 10, pady= 10)
 
         menu_periodos = ctk.CTkComboBox(frame_opcoes, values= list(periodos.keys()))
-        menu_periodos.grid(row= 0, column= 1, padx= 10, pady= 10)
+        menu_periodos.grid(row= 1, column= 0, padx= 10, pady= 10)
 
         menu_turnos = ctk.CTkComboBox(frame_opcoes, values= list(turnos.keys()))
-        menu_turnos.grid(row= 0, column= 2, padx= 10, pady= 10)
+        menu_turnos.grid(row= 1, column= 1, padx= 10, pady= 10)
 
-        botao_iniciar = ctk.CTkButton(frame_opcoes, text= "Iniciar", command=lambda: automacoes.TrocaDeTurma(curso= cursos.get(menu_cursos.get()),periodo= periodos.get(menu_periodos.get()), turno= turnos.get(menu_turnos.get())))
-        botao_iniciar.grid(row= 1, column= 1, padx= 10, pady= 10)
+        botao_iniciar = ctk.CTkButton(frame, text= "Iniciar", command=lambda: automacoes.TrocaDeTurma(campus= campus.get(menu_campus.get()), curso= cursos.get(menu_cursos.get()),periodo= periodos.get(menu_periodos.get()), turno= turnos.get(menu_turnos.get()), texto_func= self.texto))
+        botao_iniciar.pack(padx= 15, pady= (30, 10))
 
         botao_voltar = ctk.CTkButton(frame, text="Voltar", command=lambda: controller.mostrar_pagina(Principal))
-        botao_voltar.pack(pady=30)
+        botao_voltar.pack(pady=10)
 
 #---------------------#
 """     AVAUni      """
