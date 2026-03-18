@@ -1,7 +1,8 @@
 import pyautogui as pag
 import time
-from pathlib import Path
 import keyboard
+import threading
+from pathlib import Path
 
 pag.PAUSE = 1
 pag.FAILSAFE = True
@@ -112,6 +113,87 @@ def TrocaDeTurma(campus = "n", curso = None, periodo = None, turno = None, texto
                 texto_func.update()
             print("Saindo...")
             break
+
+
+#---------------------#
+"""      Censo      """
+#---------------------# 
+
+def Censo(letra = "", baixo= 0, alunos= 0):
+    pag.PAUSE = 0.2
+    keyboard.wait("[", suppress= True)
+    alunos = int(alunos)
+
+    while alunos > 0:
+        pag.press(letra)
+        pag.press("down", presses= int(baixo))
+        pag.hotkey("Enter", "down")
+        alunos -= 1
+
+
+#---------------------#
+"""Inserir Adaptação"""
+#---------------------#
+
+def Adaptacao():
+    curr = pag.locateCenterOnScreen(str(Path(__file__).parent / "assets" / "prints" / "InserirAdaptacao" / "P1_farm2026.png"))
+    pag.click(curr.x, curr.y, clicks= 2)
+
+    acad = pag.locateCenterOnScreen(str(Path(__file__).parent / "assets" / "prints" / "InserirAdaptacao" / "P2_academico.png"))
+    pag.click(acad.x, acad.y, clicks= 2)
+
+    cria = pag.locateCenterOnScreen(str(Path(__file__).parent / "assets" / "prints" / "InserirAdaptacao" / "P3_criar.png"))
+    pag.click(cria.x, cria.y, clicks= 1)
+    pag.hotkey("Enter", "N")
+    sele = pag.locateCenterOnScreen(str(Path(__file__).parent / "assets" / "prints" / "InserirAdaptacao" / "P4_selecionar.png"))
+    pag.click(sele.x, sele.y, clicks= 1)
+    conf = pag.locateCenterOnScreen(str(Path(__file__).parent / "assets" / "prints" / "InserirAdaptacao" / "P5_confirmar.png"))
+    pag.click(conf.x, conf.y, clicks= 1)
+
+    pag.hotkey("Tab", "Enter")
+    pag.typewrite("por")
+    #Vai mudar dependendo da matéria:
+    pag.press("Down")
+    pag.keyDown("shift")
+    pag.press("down", presses= 4)
+    pag.keyUp("shift")
+    pag.click(sele.x, sele.y, clicks= 1)
+    pag.click(conf.x, conf.y, clicks= 1)
+
+    pag.hotkey("tab", "enter")
+    time.sleep(0.5)
+    pag.press("s")  #de semipresencial
+    pag.press("down", presses=15)
+    pag.click(sele.x, sele.y, clicks= 1)
+    pag.click(conf.x, conf.y, clicks= 1)
+
+    filt = pag.locateCenterOnScreen(str(Path(__file__).parent / "assets" / "prints" / "InserirAdaptacao" / "P6_filtrar.png"))
+    pag.click(filt.x, filt.y, clicks= 1)
+
+    mais = pag.locateCenterOnScreen(str(Path(__file__).parent / "assets" / "prints" / "InserirAdaptacao" / "P7_mais.png"))
+    pag.click(mais.x, mais.y, clicks= 1)
+    time.sleep(0.5)
+    pag.click(mais.x, mais.y, clicks= 1)
+    chec = pag.locateCenterOnScreen(str(Path(__file__).parent / "assets" / "prints" / "InserirAdaptacao" / "P8_check.png"))
+    pag.click(chec.x, chec.y, clicks= 1)
+    regu = pag.locateCenterOnScreen(str(Path(__file__).parent / "assets" / "prints" / "InserirAdaptacao" / "P9_regular.png"))
+    pag.click(regu.x, regu.y, clicks= 1)
+    drop = pag.locateCenterOnScreen(str(Path(__file__).parent / "assets" / "prints" / "InserirAdaptacao" / "P10_drop.png"))
+    pag.click(drop.x, drop.y, clicks= 1)
+    pag.press("up", presses= 14)
+
+    pag.hotkey("enter", "tab", "tab", "enter")
+    fech = pag.locateCenterOnScreen(str(Path(__file__).parent / "assets" / "prints" / "InserirAdaptacao" / "P11_fechar.png"))
+    pag.click(fech.x, fech.y, clicks= 1)
+
+    acei = pag.locateCenterOnScreen(str(Path(__file__).parent / "assets" / "prints" / "InserirAdaptacao" / "P12_aceitar.png"))
+    pag.click(acei.x, acei.y, clicks= 1)
+    prox = pag.locateCenterOnScreen(str(Path(__file__).parent / "assets" / "prints" / "InserirAdaptacao" / "P12_aceitar.png"))
+    pag.click(prox.x, prox.y, clicks= 1)
+
+    keyboard.wait("[")
+    Adaptacao()
+
 
 if __name__ == "__main__":
     TrocaDeTurma(periodo= 1, turno= 2)

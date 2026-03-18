@@ -33,7 +33,7 @@ class App(ctk.CTk):
 
         self.paginas = {}
 
-        for Pagina in (Principal, LoginSophia, Sophia, LoginAvauni, Avauni, TrocaDeTurma):
+        for Pagina in (Principal, LoginSophia, Sophia, LoginAvauni, Avauni, TrocaDeTurma, Censo):
             pagina = Pagina(self.container, self)
             self.paginas[Pagina] = pagina
             pagina.place(relwidth = 1, relheight = 1)
@@ -128,10 +128,11 @@ class Sophia(PaginaBase):
         frame_botoes.pack()
 
         qnt_botoes = 8
-        texto = ["Abrir Sophia", "Troca de Turma", "Teste Print", "Botão", "Botão", "Botão", "Botão", "Botão", "Botão"]
+        texto = ["Abrir Sophia", "Troca de Turma", "Botão", "Teste Print", "Botão", "Botão", "Botão", "Botão", "Botão"]
         comandos = [lambda: automacoes.SophiaEntrar(),
                     lambda: controller.mostrar_pagina(TrocaDeTurma),
-                    lambda: print("Deu certo"), "", "", "", "", "", "", ""]
+                    lambda: controller.mostrar_pagina(Censo),
+                    lambda: print("Deu certo"), "", "", "", "", "", ""]
 
         linha, coluna = 0, 0
         intercalar = False
@@ -190,6 +191,43 @@ class TrocaDeTurma(PaginaBase):
 
         botao_voltar = ctk.CTkButton(frame, text="Voltar", command=lambda: controller.mostrar_pagina(Principal))
         botao_voltar.pack(pady=10)
+
+class Censo(PaginaBase):
+    def __init__(self, parent, controller):
+        super().__init__(parent, controller)
+
+        frame = ctk.CTkFrame(self, fg_color="transparent")
+        frame.pack(expand= True)
+
+        ctk.CTkLabel(frame, text="Automação para o Censo 2026", font= ("Segoe UI",20, "bold")).pack(padx= 10, pady= (10,0))
+
+        explicacao = "Digite abaixo a letra desejada e a quantidade de vezes necessárias de botão down, após isso, inicie a aplicação, ao iniciar você deverá utilizar a tecla '[' para começar"
+
+        self.texto = ctk.CTkLabel(frame, text= explicacao, wraplength=400)
+        self.texto.pack(pady= 20)
+
+        frame_opcoes = ctk.CTkFrame(frame, fg_color="transparent")
+        frame_opcoes.pack()
+
+        ctk.CTkLabel(frame_opcoes, text= "Letra desejada", wraplength= 200).grid(row= 0, column= 0, padx= 10)
+        letra_input = ctk.CTkEntry(frame_opcoes, width= 100)
+        letra_input.grid(row= 1, column= 0, padx= 10)
+
+        ctk.CTkLabel(frame_opcoes, text= "Qtde. baixo", wraplength= 200).grid(row= 0, column= 1, padx= 10)
+        vezes_input = ctk.CTkEntry(frame_opcoes, width= 100)
+        vezes_input.grid(row= 1, column= 1, padx= 10)
+
+        ctk.CTkLabel(frame_opcoes, text= "Qtde. alunos", wraplength= 200).grid(row= 0, column= 3, padx= 10)
+        alunos_input = ctk.CTkEntry(frame_opcoes, width= 100)
+        alunos_input.grid(row= 1, column= 3, padx= 10)
+
+
+        botao_iniciar = ctk.CTkButton(frame, text= "Iniciar", command=lambda: automacoes.Censo(letra= letra_input.get(), baixo= vezes_input.get(), alunos= alunos_input.get()))
+        botao_iniciar.pack(padx= 15, pady= (30, 10))
+
+        botao_voltar = ctk.CTkButton(frame, text="Voltar", command=lambda: controller.mostrar_pagina(Principal))
+        botao_voltar.pack(pady=10)
+
 
 #---------------------#
 """     AVAUni      """
