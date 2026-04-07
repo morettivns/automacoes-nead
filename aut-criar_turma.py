@@ -78,5 +78,4 @@ def criarTurma(num_periodo = 1, periodos= 8, curso= "", baixo= 0):
         num_periodo += 1
 
 threading.Thread(target= esc_listener, daemon= True).start()
-#comex
 criarTurma(1, 4, "Tecnologia da Informação", 9)

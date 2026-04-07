@@ -4,6 +4,7 @@ import keyboard
 import threading
 import os
 import pyperclip
+import mouse
 from pathlib import Path
 
 contador = 0
@@ -13,13 +14,12 @@ def contar_down(event):
     contador += 1
     print(f"Tecla ↓ pressionada {contador} vezes")
 
-# Escuta a tecla "down"
-keyboard.on_press_key("down", contar_down)
+# # Escuta a tecla "down"
+# keyboard.on_press_key("down", contar_down)
 
-print("Pressione a tecla ↓ (seta para baixo). Pressione ESC para sair.")
+# print("Pressione a tecla ↓ (seta para baixo). Pressione ESC para sair.")
 
-# Mantém o programa rodando até apertar ESC
-keyboard.wait("esc")
+# # Mantém o programa rodando até apertar ESC
+# keyboard.wait("esc")
 
-print(f"Total de vezes que você pressionou ↓: {contador}")
-
+# print(f"Total de vezes que você pressionou ↓: {contador}")
