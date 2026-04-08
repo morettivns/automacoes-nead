@@ -15,7 +15,7 @@ def status(msg = "Rodando..."):
     print(" " * 100, end="\r")  # limpa a linha
     print(msg, end="\r")
 
-def locate(pasta, arquivo, clicks= 1): #Espera a imagem aparecer na tela para clicar nela.
+def clicar(pasta, arquivo, clicks= 1): #Espera a imagem aparecer na tela para clicar nela.
     caminho = Path(__file__).parent / "assets" / "prints" / pasta / arquivo
     
     while True:
@@ -29,60 +29,103 @@ def locate(pasta, arquivo, clicks= 1): #Espera a imagem aparecer na tela para cl
             pass
         time.sleep(0.5)
 
-def esperarImagem(pasta, arquivo): #Espera a imagem aparecer na tela para prosseguir o script.
-    caminho = Path(__file__).parent / "assets" / "prints" / pasta / arquivo
-    
+def localizar(pasta, arquivos, vezes= 0): #Espera a imagem aparecer na tela para prosseguir o script.
+    if isinstance(arquivos, str): #Se for uma string vira uma lista.
+        arquivos = [arquivos]
+    tentativas = 0
+
+    caminho = Path(__file__).parent / "assets" / "prints" / pasta
     while True:
-        try:
-            pos = pag.locateCenterOnScreen(str(caminho))
-            if pos:
-                return pos
-            
-        except pag.ImageNotFoundException:
-            pass
+        for arquivo in arquivos:
+            imagem = caminho / arquivo
+            try:
+                pos = pag.locateCenterOnScreen(str(imagem))
+                if pos:
+                    return arquivo, pos
+
+            except pag.ImageNotFoundException:
+                pass
+        tentativas += 1
+        if vezes > 0 and tentativas >= vezes:
+            status("A imagem não foi encontrada, aperte 'Enter' para continuar.")
+            keyboard.wait("Enter", suppress= True)
+            return None
         time.sleep(0.5)
 
+def tiposDeAvaliacoes(text, resu, tipo):
+    clicar("Avaliacoes", "P5_nome.png")
+    pyperclip.copy(text= str(text))
+    pag.hotkey("Ctrl", "V")
+    pag.press("Tab")
+    pag.typewrite(str(resu))
+    pag.press("Tab")
+    pag.press("A")
+    pag.press("Tab", presses= 2)
+    pag.typewrite(str(tipo))
+    check = localizar("Avaliacoes", "P6_check.png")
+    pag.click(check[1].x - 35, check[1].y)
 
 def avaliacoes(tecla = 1):
     tecla = str(tecla)
-    status()
-    locate("Avaliacoes", "P1_plano.png")
+    status("Rodando Avaliações...")
+    clicar("Avaliacoes", "P1_plano.png")
     pag.press("Tab")
-    locate("Avaliacoes", "P2_disciplinas.png")
-    locate("Avaliacoes", "P3_todos.png")
-    keyboard.wait("Enter", suppress= True)
-    locate("Avaliacoes", "P4_confirmar.png")
+    clicar("Avaliacoes", "P2_disciplinas.png")
+    clicar("Avaliacoes", "P3_todos.png")
+    tema = localizar("Avaliacoes", "PE_tema_integrador.png", vezes= 4)
+    if tema:
+        pag.click(tema[1].x, tema[1].y, clicks= 2)
+        keyboard.wait("Enter", suppress= True)
+    clicar("Avaliacoes", "P4_confirmar.png")
 
-    def tiposDeAvaliacoes(text, resu, tipo):
-        locate("Avaliacoes", "P5_nome.png")
-        pyperclip.copy(text= str(text))
-        pag.hotkey("Ctrl", "V")
-        pag.press("Tab")
-        pag.typewrite(str(resu))
-        pag.press("Tab")
-        pag.press("A")
-        pag.press("Tab", presses= 2)
-        pag.typewrite(str(tipo))
-        esperarImagem("Avaliacoes", "P5_check.png")
-        check = pag.locateCenterOnScreen(str(Path(__file__).parent / "assets" / "prints" / "Avaliacoes" / "P5_check.png"))
-        pag.click(check.x - 35, check.y)
-
+#Matérias normais:
     if tecla == "1":
         tiposDeAvaliacoes("Avaliação Diagnóstica", "AD", "AV-")
-        locate("Avaliacoes", "P6_proximo.png")
-        keyboard.wait("Enter", suppress= True)
+        #keyboard.wait("Enter", suppress= True)
+        clicar("Avaliacoes", "P7_proximo.png")
 
     if tecla in ["1", "2"]:
         tiposDeAvaliacoes("Avaliação Substitutiva", "AS", "Sub")
-        locate("Avaliacoes", "P6_proximo.png")
+        clicar("Avaliacoes", "P7_proximo.png")
 
     if tecla in ["1", "2", "3"]:
         tiposDeAvaliacoes("Avaliação Integradora", "AI", "API-")
-        locate("Avaliacoes", "P6_proximo.png")
+        clicar("Avaliacoes", "P7_proximo.png")
 
     if tecla in ["1", "2", "3", "4"]:
         tiposDeAvaliacoes("Avaliação Especial", "AE", "Ava")
-        locate("Avaliacoes", "P4_confirmar.png")
+        clicar("Avaliacoes", "P8_confirmar.png")
+        pag.press("Enter")
+
+def temaIntegrador(tecla = "t1"):
+    tecla.lower()
+    status("Rodando Tema Integrador...")
+    clicar("Avaliacoes", "P1_plano.png")
+    pag.press("Tab")
+    clicar("Avaliacoes", "P2_disciplinas.png")
+    localizar("Avaliacoes", "P4_confirmar.png") #Apenas para evitar um bug.
+    tema = localizar("Avaliacoes", "PE_tema_integrador.png", vezes= 4)
+    if tema:
+        pag.click(tema[1].x, tema[1].y, clicks= 2)
+        keyboard.wait("Enter", suppress= True)
+    clicar("Avaliacoes", "P4_confirmar.png")
+
+#Tema integrador:
+    if tecla == "t1":
+        tiposDeAvaliacoes("Tema Integrador - Trabalho", "TI 1", "Tem")
+        clicar("Avaliacoes", "P7_proximo.png")
+
+    if tecla in ["t1", "t2"]:
+        tiposDeAvaliacoes("Tema Integrador - Apresentação", "TI 2", "Tem")
+        clicar("Avaliacoes", "P8_confirmar.png")
+        pag.press("Enter", presses= 2)
 
 threading.Thread(target= esc_listener, daemon= True).start()
-avaliacoes()
+while True:
+    avaliacoes()
+    temaIntegrador()
+    sair = localizar("Avaliacoes", "P1_plano.png")
+    pag.click(sair[1].x, sair[1].y + 35)
+    pag.hotkey("Alt", "F4")
+    pag.hotkey("Tab", "Down", "Enter")
+    clicar("Avaliacoes", "P9_quadro_curricular.png")
